@@ -53,7 +53,7 @@ module.exports = (robot) ->
         weather = json.data.weather[0]
         hourly = weather.hourly
         date = weather.date
-        currentTime = new Date().getHours()
+        currentTime = new Date().getHours() - 5
         map_url = "#{google_api}" + "#{coords}" +
                   "&zoom=15&size=600x600&maptype=satellite" +
                   "&markers=color:blue%7Clabel:S%7C" +
