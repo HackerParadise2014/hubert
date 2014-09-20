@@ -61,7 +61,7 @@ module.exports = (robot) ->
 
         msg.send map_url
         msg.send ""
-        msg.send "*SURF REPORT FOR #{date}*"
+        msg.send "*SURF REPORT FOR #{date}*, #{realTime(currentTime)}"
         msg.send ""
 
         for hour in hourly
