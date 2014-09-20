@@ -7,16 +7,34 @@
 api_key = process.env.HUBOT_WORLDWEATHERONLINE_API_KEY or 'fc38fd396afef8f31b877b23d33b54f20e92f600'
 google_api = 'http://maps.googleapis.com/maps/api/staticmap?center='
 
+wind_directions =
+    SW: 'Onshore'
+    NW: 'Onshore'
+    W: 'Onshore'
+    N: 'Sideshore'
+    S: 'Sideshore'
+    NE: 'Offshore'
+    SE: 'Offshore'
+    E: 'Offshore'
+
 coordinates =
-    carrillo: '9.87605,-85.493'
-    samara: '10.25,-85.416'
-    nosara: '9.9833,-85.649'
-    camoranal: '9.7579,-84.6214'
+    carrillo: '9.8663679,-85.4909363'
+    samara: '9.8766711,-85.5249146'
+    nosara: '9.971286,-85.6855052'
+    camoranal: '9.8551676,-85.4448617'
 
 roundNumber = (number, precision) ->
   precision = Math.abs(parseInt(precision)) or 0
   multiplier = Math.pow(10, precision)
   Math.round(number * multiplier) / multiplier
+
+realTime = (time) ->
+  if time > 12
+    return "#{time - 12}" + "PM"
+
+  else
+    return "#{time}" + "AM"
+
 
 module.exports = (robot) ->
   robot.respond /surf (\w+)/i, (msg) ->
@@ -43,26 +61,25 @@ module.exports = (robot) ->
 
         msg.send map_url
         msg.send ""
-        msg.send "########################################"
-        msg.send "#### Surf Report for #{date}  #####"
-        msg.send "########################################"
+        msg.send "*SURF REPORT FOR #{date}*"
+        msg.send ""
 
         for hour in hourly
           reportTime = hour.time / 100
 
           if reportTime > (currentTime - 2)
+
             waveHeight = hour.swellHeight_m * 3.28084
             waveHeightRounded = roundNumber(waveHeight, 2)
             swellPeriod = hour.swellPeriod_secs
             windDir = hour.winddir16Point
             windspeedMiles = hour.windspeedMiles
+            rt = realTime(reportTime)
 
+            msg.send "*Surf Report:* #{rt}"
+            msg.send "*Wave Height:* #{waveHeightRounded}ft at #{swellPeriod} seconds"
+            msg.send "*Wind:* #{windspeedMiles}mph, #{wind_directions[windDir]}"
             msg.send ""
-            msg.send "Surf report for #{reportTime}"
-            msg.send "Wave height #{waveHeightRounded} in feet at #{swellPeriod} seconds"
-            msg.send "With wind coming from #{windDir} at #{windspeedMiles} mph"
-            msg.send ""
-            msg.send "----------------------------------------"
 
       catch error
         msg.send "Some bad shit happened."
