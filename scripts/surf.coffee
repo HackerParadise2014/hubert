@@ -31,10 +31,8 @@ roundNumber = (number, precision) ->
 realTime = (time) ->
   if time > 12
     return "#{time - 12}" + "PM"
-
   else
     return "#{time}" + "AM"
-
 
 module.exports = (robot) ->
   robot.respond /surf (\w+)/i, (msg) ->
@@ -43,8 +41,8 @@ module.exports = (robot) ->
              when 'carrillo' then coordinates.carrillo
              when 'samara' then coordinates.samara
              when 'nosara' then coordinates.nosara
-             when 'camaronal' then coordinates.camaronal
-             else coordinates.carrillo
+             when 'camaronal' then coordinates.camoranal
+             else '9.8663679,-85.4909363'
 
     api_url = "http://api.worldweatheronline.com/free/v1/marine.ashx?q=#{coords}&format=json&fx=yes&includelocation=yes&lang=en&key=#{api_key}"
     msg.http(api_url).get() (err, res, body) ->
