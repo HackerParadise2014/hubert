@@ -7,6 +7,10 @@
 api_key = process.env.HUBOT_WORLDWEATHERONLINE_API_KEY or 'fc38fd396afef8f31b877b23d33b54f20e92f600'
 google_api = 'http://maps.googleapis.com/maps/api/staticmap?center='
 
+sleep = (ms) ->
+  start = new Date().getTime()
+  continue while new Date().getTime() - start < ms
+
 wind_directions =
     SW: 'Onshore'
     NW: 'Onshore'
@@ -29,7 +33,11 @@ roundNumber = (number, precision) ->
   Math.round(number * multiplier) / multiplier
 
 realTime = (time) ->
-  if time > 12
+  if time == 12
+    return '12PM'
+  else if time == 0
+    return '12AM'
+  else if time > 12
     return "#{time - 12}" + "PM"
   else
     return "#{time}" + "AM"
@@ -63,6 +71,8 @@ module.exports = (robot) ->
         msg.send "*SURF REPORT FOR #{date}*"
         msg.send ""
 
+
+
         for hour in hourly
           reportTime = hour.time / 100
 
@@ -80,8 +90,8 @@ module.exports = (robot) ->
                          "*Wind:* #{windspeedMiles}mph, #{wind_directions[windDir]}\n" +
                          "\n\n" +
                          "*--------------------------------------------------*"
-
             msg.send surfReport
+            sleep 1000
 
       catch error
         msg.send "Some bad shit happened."
