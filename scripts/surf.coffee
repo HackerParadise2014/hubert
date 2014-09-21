@@ -51,7 +51,8 @@ module.exports = (robot) ->
         weather = json.data.weather[0]
         hourly = weather.hourly
         date = weather.date
-        currentTime = new Date().getHours() - 5
+        currentTime = new Date().getHours()
+        adjustedTime = currentTime - 5
         map_url = "#{google_api}" + "#{coords}" +
                   "&zoom=15&size=600x600&maptype=satellite" +
                   "&markers=color:blue%7Clabel:S%7C" +
@@ -59,7 +60,7 @@ module.exports = (robot) ->
 
         msg.send map_url
         msg.send ""
-        msg.send "*SURF REPORT FOR #{date}*, #{realTime(currentTime)}"
+        msg.send "*SURF REPORT FOR #{date}*, #{realTime(adjustedTime)}"
         msg.send ""
 
         for hour in hourly
