@@ -15,10 +15,14 @@ wind_directions =
   SW: 'Onshore'
   NW: 'Onshore'
   W: 'Onshore'
+  NNW: 'Onshore'
+  SSW: 'Onshore'
   N: 'Sideshore'
   S: 'Sideshore'
   NE: 'Offshore'
   SE: 'Offshore'
+  NNE: 'Offshore'
+  SSE: 'Offshore'
   E: 'Offshore'
 
 coordinates =
@@ -46,11 +50,11 @@ module.exports = (robot) ->
   robot.respond /surf (\w+)/i, (msg) ->
     city_name = msg.match[1].toLowerCase()
     coords = switch(city_name)
-             when 'carrillo' then coordinates.carrillo
-             when 'samara' then coordinates.samara
-             when 'nosara' then coordinates.nosara
-             when 'camaronal' then coordinates.camaronal
-             else '9.8663679,-85.4909363'
+      when 'carrillo' then coordinates.carrillo
+      when 'samara' then coordinates.samara
+      when 'nosara' then coordinates.nosara
+      when 'camaronal' then coordinates.camaronal
+      else '9.8663679,-85.4909363'
 
     api_url = "http://api.worldweatheronline.com/free/v1/marine.ashx?q=#{coords}&format=json&fx=yes&includelocation=yes&lang=en&key=#{api_key}"
     msg.http(api_url).get() (err, res, body) ->
@@ -88,14 +92,13 @@ module.exports = (robot) ->
             windspeedMiles = hour.windspeedMiles
             rt = realTime(reportTime)
 
-            surfReport = "*Surf Report:* #{rt}\n" +
+            surfReport = "*--------------------------------------------------*\n" +
+                         "*Surf Report:* #{rt}\n" +
                          "*Wave Height:* #{waveHeightRounded}ft at #{swellPeriod} seconds\n" +
-                         "*Wind:* #{windspeedMiles}mph, #{wind_directions[windDir]}\n" +
-                         "\n\n" +
+                         "*Wind:* #{windspeedMiles}mph, #{wind_directions[windDir]} (#{windDir})\n" +
                          "*--------------------------------------------------*"
             message.push surfReport
-          slack_message = message.join("\n")
-          msg.send slack_message
-
+          @slack_message = message.join("\n")
       catch error
         msg.send "Some bad shit happened."
+      msg.send @slack_message
