@@ -12,20 +12,20 @@ sleep = (ms) ->
   continue while new Date().getTime() - start < ms
 
 wind_directions =
-    SW: 'Onshore'
-    NW: 'Onshore'
-    W: 'Onshore'
-    N: 'Sideshore'
-    S: 'Sideshore'
-    NE: 'Offshore'
-    SE: 'Offshore'
-    E: 'Offshore'
+  SW: 'Onshore'
+  NW: 'Onshore'
+  W: 'Onshore'
+  N: 'Sideshore'
+  S: 'Sideshore'
+  NE: 'Offshore'
+  SE: 'Offshore'
+  E: 'Offshore'
 
 coordinates =
-    carrillo: '9.8663679,-85.4909363'
-    samara: '9.8766711,-85.5249146'
-    nosara: '9.971286,-85.6855052'
-    camoranal: '9.8551676,-85.4448617'
+  carrillo: '9.8663679,-85.4909363'
+  samara: '9.8766711,-85.5249146'
+  nosara: '9.971286,-85.6855052'
+  camaronal: '9.8551676,-85.4448617'
 
 roundNumber = (number, precision) ->
   precision = Math.abs(parseInt(precision)) or 0
@@ -49,7 +49,7 @@ module.exports = (robot) ->
              when 'carrillo' then coordinates.carrillo
              when 'samara' then coordinates.samara
              when 'nosara' then coordinates.nosara
-             when 'camaronal' then coordinates.camoranal
+             when 'camaronal' then coordinates.camaronal
              else '9.8663679,-85.4909363'
 
     api_url = "http://api.worldweatheronline.com/free/v1/marine.ashx?q=#{coords}&format=json&fx=yes&includelocation=yes&lang=en&key=#{api_key}"
@@ -59,8 +59,13 @@ module.exports = (robot) ->
         weather = json.data.weather[0]
         hourly = weather.hourly
         date = weather.date
-        currentTime = new Date().getHours()
-        adjustedTime = currentTime - 5
+        currentTime = new Date().getUTCHours()
+        if currentTime == 0
+          newTime = 24
+        else
+          newTime = currentTime
+
+        adjustedTime = newTime - 6
         map_url = "#{google_api}" + "#{coords}" +
                   "&zoom=15&size=600x600&maptype=satellite" +
                   "&markers=color:blue%7Clabel:S%7C" +
@@ -70,8 +75,6 @@ module.exports = (robot) ->
         msg.send ""
         msg.send "*SURF REPORT FOR #{date}*"
         msg.send ""
-
-
 
         for hour in hourly
           reportTime = hour.time / 100
