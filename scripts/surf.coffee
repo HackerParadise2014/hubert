@@ -75,10 +75,11 @@ module.exports = (robot) ->
             windspeedMiles = hour.windspeedMiles
             rt = realTime(reportTime)
 
-            msg.send "*Surf Report:* #{rt}"
-            msg.send "*Wave Height:* #{waveHeightRounded}ft at #{swellPeriod} seconds"
-            msg.send "*Wind:* #{windspeedMiles}mph, #{wind_directions[windDir]}"
-            msg.send ""
+            msg.send "*Surf Report:* #{rt}\n" +
+                     "*Wave Height:* #{waveHeightRounded}ft at #{swellPeriod} seconds\n" +
+                     "*Wind:* #{windspeedMiles}mph, #{wind_directions[windDir]}\n" +
+                     "\n\n" +
+                     "*--------------------------------------------------*"
 
       catch error
         msg.send "Some bad shit happened."
