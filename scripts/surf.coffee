@@ -60,13 +60,13 @@ module.exports = (robot) ->
 
         msg.send map_url
         msg.send ""
-        msg.send "*SURF REPORT FOR #{date}*, #{realTime(adjustedTime)}"
+        msg.send "*SURF REPORT FOR #{date}*"
         msg.send ""
 
         for hour in hourly
           reportTime = hour.time / 100
 
-          if reportTime > (currentTime - 2)
+          if reportTime > (adjustedTime - 2)
 
             waveHeight = hour.swellHeight_m * 3.28084
             waveHeightRounded = roundNumber(waveHeight, 2)
@@ -75,11 +75,13 @@ module.exports = (robot) ->
             windspeedMiles = hour.windspeedMiles
             rt = realTime(reportTime)
 
-            msg.send "*Surf Report:* #{rt}\n" +
-                     "*Wave Height:* #{waveHeightRounded}ft at #{swellPeriod} seconds\n" +
-                     "*Wind:* #{windspeedMiles}mph, #{wind_directions[windDir]}\n" +
-                     "\n\n" +
-                     "*--------------------------------------------------*"
+            surfReport = "*Surf Report:* #{rt}\n" +
+                         "*Wave Height:* #{waveHeightRounded}ft at #{swellPeriod} seconds\n" +
+                         "*Wind:* #{windspeedMiles}mph, #{wind_directions[windDir]}\n" +
+                         "\n\n" +
+                         "*--------------------------------------------------*"
+
+            msg.send surfReport
 
       catch error
         msg.send "Some bad shit happened."
