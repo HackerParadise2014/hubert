@@ -71,10 +71,10 @@ module.exports = (robot) ->
                   "&markers=color:blue%7Clabel:S%7C" +
                   "#{coords}"
 
-        msg.send map_url
-        msg.send ""
-        msg.send "*SURF REPORT FOR #{date}*"
-        msg.send ""
+        message = [map_url]
+        message.push("")
+        message.push("*SURF REPORT FOR #{date}*")
+        message.push("")
 
         for hour in hourly
           reportTime = hour.time / 100
@@ -93,8 +93,9 @@ module.exports = (robot) ->
                          "*Wind:* #{windspeedMiles}mph, #{wind_directions[windDir]}\n" +
                          "\n\n" +
                          "*--------------------------------------------------*"
-            msg.send surfReport
-            sleep 1000
+            message.push surfReport
+          slack_message = message.join("\n")
+          msg.send slack_message
 
       catch error
         msg.send "Some bad shit happened."
