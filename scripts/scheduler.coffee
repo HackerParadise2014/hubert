@@ -46,13 +46,13 @@ module.exports = (robot) ->
             throw err
           replies ||= "{}"
 
-          console.log replies
+          robot.logger.info replies
 
           parsed = JSON.parse(replies)
           parsed[msg.message.user.name] = msg.message.text.replace(msg.match[0], '')
           client.set event_key, JSON.stringify(parsed)
 
-          console.log JSON.stringify(parsed)
+          robot.logger.info JSON.stringify(parsed)
       else if keys.length == 0
         msg.send("Invalid event id.")
       else 
@@ -90,7 +90,7 @@ module.exports = (robot) ->
 
     client.keys "scheduler_*:messages", (err, keys) ->
       keys = keys.sort().reverse()[0..(count - 1)]
-      console.log(keys)
+      robot.logger.info(keys)
       client.mget keys, (err, values) ->
         if err
           throw err 
@@ -112,7 +112,7 @@ module.exports = (robot) ->
 
       if keys.length == 1
         event_key = keys[0].replace('messages', 'responses')
-        console.log(event_key)
+        robot.logger.info(event_key)
         client.get event_key, (err, replies) ->
           if not replies
             msg.send("No responses found for #{event_id}.")
@@ -153,6 +153,18 @@ module.exports = (robot) ->
       else 
         msg.send("The universe is not random.")
 
+  if info.auth
+    client.auth info.auth.split(":")[1], (err) ->
+      if err
+        robot.logger.error "Failed to authenticate to Redis"
+      else
+        robot.logger.info "Successfully authenticated to Redis"
+
+  client.on "error", (err) ->
+    robot.logger.error err
+
+  client.on "connect", ->
+    robot.logger.debug "Successfully connected to Redis"
 
 
 
@@ -173,4 +185,4 @@ module.exports = (robot) ->
 #   if err
 #     throw err 
 #   else if res 
-#     console.log body 
+#     robot.logger.info body 
