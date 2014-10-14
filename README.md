@@ -102,12 +102,16 @@ name as a double quoted string to the `external-scripts.json` file in this repo.
 
     % heroku create --stack cedar
     % git push heroku master
-    % heroku ps:scale app=1
+    % heroku ps:scale web=1
 
 If your Heroku account has been verified you can run the following to enable
 and add the Redis to Go addon to your app.
 
     % heroku addons:add redistogo:nano
+    
+If you want to alert Slack users with @mentions using desktop notifications, you will need to set up this ENV variable in Heroku:
+
+    % heroku config:set HUBOT_SLACK_LINK_NAMES=1
 
 If you run into any problems, checkout Heroku's [docs][heroku-node-docs].
 
