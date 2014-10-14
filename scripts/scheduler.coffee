@@ -145,7 +145,7 @@ module.exports = (robot) ->
           replies = JSON.parse(replies)
           replies_str = ""
           for username, reply of replies 
-            replies_str += "@#{username} "
+            replies_str += "<!#{username}> "
 
           msg.send(replies_str + "let's go!")
       else if keys.length == 0
